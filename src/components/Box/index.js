@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const Box = styled.div`
-    background: #FFFFFF;
+    background: #424242;
     border-radius: 8px;
 
     padding: 16px;
@@ -15,19 +15,21 @@ const Box = styled.div`
     }
     .title {
         font-size: 32px;
-        font-weight: 400;
+        font-weight: 700;
         margin-bottom: 20px;
+        color: #ffffff;
     }
     .subTitle {
         font-size: 18px;
         font-weight: 400;
         margin-bottom: 20px;
+        color: #ffffff;
     }
     .smallTitle {
         margin-bottom: 20px;
         font-size: 16px;
         font-weight: 700;
-        color: #333333;
+        color: #ffffff;
         margin-bottom: 20px;
     }
     hr {
@@ -54,7 +56,8 @@ const Box = styled.div`
         padding: 8px 12px;
         color: #FFFFFF;
         border-radius: 10000px;
-        background-color: #6F92BB;
+        background-color: #9999BBAA;
+        cursor:pointer
     }
 `;
 

@@ -20,12 +20,53 @@ function ProfileSideBar(propriedades){
   )
 }
 
+function ProfileBox(propriedades){
+  return (
+    <ProfileRelationsBoxWrapper>
+            <h2 className="smallTitle">
+              {propriedades.title} ({propriedades.items.length})
+            </h2>
+            <ul>
+              {propriedades.items.map((item) => {
+                return (
+                  <li key={item?.id}>
+                    <a href={`/users/${item?.title}`}>
+                      <img src={item?.image} />
+                      <span>{ item.title }</span>
+                    </a>
+                  </li>
+                )
+              })}
+            </ul>
+          </ProfileRelationsBoxWrapper>
+  )
+}
+
 export default function Home() {
   
-  const pessoasFavoritas = [ 
-    'henrithanN', 'CabecaDeCenoura', 'GuilOliveira',
-    'miolivc', 'gabrielDuete', 'omariosouto'
-  ];
+  React.useEffect(()=>{
+    //API Github
+    fetch('https://api.github.com/users/henrithanN/followers')
+      .then((res)=>{
+        return res.json();
+      })
+      .then((res)=>{
+        
+        return setSeguidores(res);
+      })
+
+    //API GraphQL
+    fetch('https://graphql.datocms.com/', {
+      method:'POST',
+      headers:{
+        'Authorization':'fe8dd1b981f83ae58d569edf3f33ef',
+        'Content-Type':'application/json',
+        'Accept':'application/json'
+      }
+    })
+  })
+  const [seguidores, setSeguidores] = React.useState([]);
+  const pessoasFavoritas = ['henrithanN', 'CabecaDeCenoura', 'GuilOliveira','miolivc', 'gabrielDuete', 'omariosouto'];
   const [comunidades, setComunidades] = React.useState([{id:'123', title: 'Eu odeio Acordar Cedo', image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg'}]);;
   const usuario = 'henrithanN';
 
@@ -70,7 +111,7 @@ export default function Home() {
           </Box>
         </div>
         <div className="profileRelationsArea" style={{ gridArea: 'profileRelationsArea' }}>
-          <ProfileRelationsBoxWrapper>
+          <ProfileRelationsBoxWrapper >
             <h2 className="smallTitle">
               Amigos ({pessoasFavoritas.length})
             </h2>
@@ -88,23 +129,8 @@ export default function Home() {
             </ul>
           </ProfileRelationsBoxWrapper>
 
-          <ProfileRelationsBoxWrapper>
-          <h2 className="smallTitle">
-            Comunidades({comunidades.length})
-          </h2>
-          <ul>
-              {comunidades.map((item) => {
-                return (
-                  <li key={item.id}>
-                    <a href={`/users/${item.title}`}>
-                      <img src={ item.image } />
-                      <span>{ item.title }</span>
-                    </a>
-                  </li>
-                )
-              })}
-            </ul>
-          </ProfileRelationsBoxWrapper>
+          <ProfileBox title="Comunidades" items={comunidades}/>
+          <ProfileBox title="Seguidores" items={seguidores}/>
 
         </div>
       </MainGrid>
