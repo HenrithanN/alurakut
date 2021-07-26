@@ -41,6 +41,27 @@ function ProfileBox(propriedades){
           </ProfileRelationsBoxWrapper>
   )
 }
+function FriendsBox(propriedades){
+  return (
+    <ProfileRelationsBoxWrapper>
+            <h2 className="smallTitle">
+              {propriedades.login} ({propriedades.items.length})
+            </h2>
+            <ul>
+              {propriedades.items.map((item) => {
+                return (
+                  <li key={item?.id}>
+                    <a href={`/users/${item?.login}`}>
+                      <img src={item?.avatar_url} />
+                      <span>{ item.login }</span>
+                    </a>
+                  </li>
+                )
+              })}
+            </ul>
+          </ProfileRelationsBoxWrapper>
+  )
+}
 
 export default function Home() {
   
@@ -55,6 +76,16 @@ export default function Home() {
         return setSeguidores(res);
       })
 
+    //API Github
+    fetch('https://api.github.com/users/henrithanN/following')
+      .then((res)=>{
+        return res.json();
+      })
+      .then((res)=>{
+        
+        return setPessoasFavoritas(res);
+      })
+
     //API GraphQL
     fetch('https://graphql.datocms.com/', {
       method:'POST',
@@ -66,8 +97,8 @@ export default function Home() {
     })
   })
   const [seguidores, setSeguidores] = React.useState([]);
-  const pessoasFavoritas = ['henrithanN', 'CabecaDeCenoura', 'GuilOliveira','miolivc', 'gabrielDuete', 'omariosouto'];
-  const [comunidades, setComunidades] = React.useState([{id:'123', title: 'Eu odeio Acordar Cedo', image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg'}]);;
+  const [pessoasFavoritas, setPessoasFavoritas] = React.useState([]);
+  const [comunidades, setComunidades] = React.useState([{id:'123', title: 'Eu odeio Acordar Cedo', image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg'}]);
   const usuario = 'henrithanN';
 
   return (
@@ -111,26 +142,11 @@ export default function Home() {
           </Box>
         </div>
         <div className="profileRelationsArea" style={{ gridArea: 'profileRelationsArea' }}>
-          <ProfileRelationsBoxWrapper >
-            <h2 className="smallTitle">
-              Amigos ({pessoasFavoritas.length})
-            </h2>
-            <ul>
-              {pessoasFavoritas.map((item) => {
-                return (
-                  <li key={item}>
-                    <a href={`/users/${item}`}>
-                      <img src={`https://github.com/${item}.png`} />
-                      <span>{ item }</span>
-                    </a>
-                  </li>
-                )
-              })}
-            </ul>
-          </ProfileRelationsBoxWrapper>
+          
 
-          <ProfileBox title="Comunidades" items={comunidades}/>
-          <ProfileBox title="Seguidores" items={seguidores}/>
+          <ProfileBox title="Amigos" items={pessoasFavoritas}/>
+          <FriendsBox title="Comunidades" items={comunidades}/>
+          <FriendsBox title="Seguidores" items={seguidores}/>
 
         </div>
       </MainGrid>
