@@ -32,9 +32,9 @@ function ProfileBox({ title, items }){
               {items.map((item) => {
                 return (
                   <li key={item?.id}>
-                    <a href={`/users/${item?.title}`}>
+                    <a href={`/users/${item?.login}`}>
                       <img src={item?.avatar_url} />
-                      <span>{ item.title }</span>
+                      <span>{ item.login }</span>
                     </a>
                   </li>
                 )
@@ -55,7 +55,7 @@ function FriendsBox({ title, items }){
                   <li key={item?.id}>
                     <a href={`/users/${item?.login}`}>
                       <img src={item?.avatar_url} />
-                      <span>{ item.login }</span>
+                      <span>{ item.login ?? item.title }</span>
                     </a>
                   </li>
                 )
