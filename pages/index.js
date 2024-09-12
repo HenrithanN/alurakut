@@ -3,15 +3,17 @@ import MainGrid from '../src/components/MainGrid'
 import Box from '../src/components/Box'
 import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet } from '../src/libs/aluraKutCommons'
 import ProfileRelationsBoxWrapper from '../src/components/ProfileRelations';
+import { useConstCallback } from 'powerhooks'
 
-function ProfileSideBar(propriedades){
+function ProfileSideBar({ githubUser }){
+
   return (
     <Box>
-      <img src={`https://github.com/${propriedades.githubUser}.png`} alt="Foto de Perfil" style={{ borderRadius: "8px" }}/>
+      <img src={`https://github.com/${githubUser}.png`} alt="Foto de Perfil" style={{ borderRadius: "8px" }}/>
       <hr />
       <p>
-        <a className="boxLink" href={`https://github.com/${propriedades.githubUser}`}>
-          @{propriedades.githubUser}
+        <a className="boxLink" href={`https://github.com/${githubUser}`}>
+          @{githubUser}
         </a>
       </p>
       <hr />
@@ -20,18 +22,18 @@ function ProfileSideBar(propriedades){
   )
 }
 
-function ProfileBox(propriedades){
+function ProfileBox({ title, items }){
   return (
     <ProfileRelationsBoxWrapper>
             <h2 className="smallTitle">
-              {propriedades.title} ({propriedades.items.length})
+              {title} ({items.length})
             </h2>
             <ul>
-              {propriedades.items.map((item) => {
+              {items.map((item) => {
                 return (
                   <li key={item?.id}>
                     <a href={`/users/${item?.title}`}>
-                      <img src={item?.image} />
+                      <img src={item?.avatar_url} />
                       <span>{ item.title }</span>
                     </a>
                   </li>
@@ -41,14 +43,14 @@ function ProfileBox(propriedades){
           </ProfileRelationsBoxWrapper>
   )
 }
-function FriendsBox(propriedades){
+function FriendsBox({ title, items }){
   return (
     <ProfileRelationsBoxWrapper>
             <h2 className="smallTitle">
-              {propriedades.login} ({propriedades.items.length})
+              { title } ({items.length})
             </h2>
             <ul>
-              {propriedades.items.map((item) => {
+              {items.map((item) => {
                 return (
                   <li key={item?.id}>
                     <a href={`/users/${item?.login}`}>
@@ -64,42 +66,54 @@ function FriendsBox(propriedades){
 }
 
 export default function Home() {
-  
-  React.useEffect(()=>{
-    //API Github
-    fetch('https://api.github.com/users/henrithanN/followers')
-      .then((res)=>{
-        return res.json();
-      })
-      .then((res)=>{
-        
-        return setSeguidores(res);
-      })
+  const [seguidores, setSeguidores] = React.useState([]);
+  const [comunidades, setComunidades] = React.useState([{id:'123', title: 'Eu odeio Acordar Cedo', avatar_url: 'https://alurakut.vercel.app/capa-comunidade-01.jpg'}]);
+  const usuario = 'henrithanN';
 
-    //API Github
-    fetch('https://api.github.com/users/henrithanN/following')
-      .then((res)=>{
-        return res.json();
-      })
-      .then((res)=>{
-        
-        return setPessoasFavoritas(res);
-      })
+  const BASE_URL = `https://api.github.com/users/${usuario}`
+  
+  const fetchFollowers = useConstCallback(async () => {
+    const data = await fetch(`${BASE_URL}/followers`)
+    .then((res)=>{
+      return res.json();
+    })
+    .then((res)=>{
+      
+      return (res);
+    })
+
+    setSeguidores(data)
+    return null
+  })
+
+  const fetchFavoritePeople = useConstCallback(async () => {
+    const data = await fetch(`${BASE_URL}/following`)
+    .then((res)=>{
+      return res.json();
+    })
+    .then((res)=>{
+      
+      return (res);
+    })
+
+    setPessoasFavoritas(data)
+    return null
+  })
+  React.useEffect(()=>{
+    fetchFollowers()
+    fetchFavoritePeople()
 
     //API GraphQL
-    fetch('https://graphql.datocms.com/', {
-      method:'POST',
-      headers:{
-        'Authorization':'fe8dd1b981f83ae58d569edf3f33ef',
-        'Content-Type':'application/json',
-        'Accept':'application/json'
-      }
-    })
-  })
-  const [seguidores, setSeguidores] = React.useState([]);
+    // fetch('https://graphql.datocms.com/', {
+    //   method:'POST',
+    //   headers:{
+    //     'Authorization':'fe8dd1b981f83ae58d569edf3f33ef',
+    //     'Content-Type':'application/json',
+    //     'Accept':'application/json'
+    //   }
+    // })
+  }, [fetchFollowers, fetchFavoritePeople])
   const [pessoasFavoritas, setPessoasFavoritas] = React.useState([]);
-  const [comunidades, setComunidades] = React.useState([{id:'123', title: 'Eu odeio Acordar Cedo', image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg'}]);
-  const usuario = 'henrithanN';
 
   return (
     <>
@@ -123,7 +137,7 @@ export default function Home() {
               const novaComunidade = {
                 id: new Date().toISOString(),
                 title:  dadosForm.get('title'),
-                image:  dadosForm.get('image')
+                avatar_url:  dadosForm.get('image')
               }
 
               const addComunidade = [...comunidades, novaComunidade]
