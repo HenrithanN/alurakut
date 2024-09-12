@@ -1,73 +1,18 @@
 import React from 'react';
-import MainGrid from '../src/components/MainGrid'
-import Box from '../src/components/Box'
-import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet } from '../src/libs/aluraKutCommons'
-import ProfileRelationsBoxWrapper from '../src/components/ProfileRelations';
+import { useEffect, useState} from 'react'
+import MainGrid from '../src/styledComponents/MainGrid'
+import Box from '../src/styledComponents/Box'
+import { AlurakutMenu, OrkutNostalgicIconSet } from '../src/libs/aluraKutCommons'
 import { useConstCallback } from 'powerhooks'
-
-function ProfileSideBar({ githubUser }){
-
-  return (
-    <Box>
-      <img src={`https://github.com/${githubUser}.png`} alt="Foto de Perfil" style={{ borderRadius: "8px" }}/>
-      <hr />
-      <p>
-        <a className="boxLink" href={`https://github.com/${githubUser}`}>
-          @{githubUser}
-        </a>
-      </p>
-      <hr />
-      <AlurakutProfileSidebarMenuDefault />
-    </Box>
-  )
-}
-
-function ProfileBox({ title, items }){
-  return (
-    <ProfileRelationsBoxWrapper>
-            <h2 className="smallTitle">
-              {title} ({items.length})
-            </h2>
-            <ul>
-              {items.map((item) => {
-                return (
-                  <li key={item?.id}>
-                    <a href={`/users/${item?.login}`}>
-                      <img src={item?.avatar_url} />
-                      <span>{ item.login }</span>
-                    </a>
-                  </li>
-                )
-              })}
-            </ul>
-          </ProfileRelationsBoxWrapper>
-  )
-}
-function FriendsBox({ title, items }){
-  return (
-    <ProfileRelationsBoxWrapper>
-            <h2 className="smallTitle">
-              { title } ({items.length})
-            </h2>
-            <ul>
-              {items.map((item) => {
-                return (
-                  <li key={item?.id}>
-                    <a href={`/users/${item?.login}`}>
-                      <img src={item?.avatar_url} />
-                      <span>{ item.login ?? item.title }</span>
-                    </a>
-                  </li>
-                )
-              })}
-            </ul>
-          </ProfileRelationsBoxWrapper>
-  )
-}
+import FriendsBox  from '../src/components/FriendsBox'
+import ProfileBox  from '../src/components/ProfileBox'
+import ProfileSideBar  from '../src/components/ProfileSideBar'
 
 export default function Home() {
-  const [seguidores, setSeguidores] = React.useState([]);
-  const [comunidades, setComunidades] = React.useState([{id:'123', title: 'Eu odeio Acordar Cedo', avatar_url: 'https://alurakut.vercel.app/capa-comunidade-01.jpg'}]);
+  const [seguidores, setSeguidores] = useState([]);
+  const [comunidades, setComunidades] = useState([{id:'123', title: 'Eu odeio Acordar Cedo', avatar_url: 'https://alurakut.vercel.app/capa-comunidade-01.jpg'}]);
+  const [pessoasFavoritas, setPessoasFavoritas] = useState([]);
+
   const usuario = 'henrithanN';
 
   const BASE_URL = `https://api.github.com/users/${usuario}`
@@ -99,7 +44,8 @@ export default function Home() {
     setPessoasFavoritas(data)
     return null
   })
-  React.useEffect(()=>{
+
+  useEffect(()=>{
     fetchFollowers()
     fetchFavoritePeople()
 
@@ -113,7 +59,7 @@ export default function Home() {
     //   }
     // })
   }, [fetchFollowers, fetchFavoritePeople])
-  const [pessoasFavoritas, setPessoasFavoritas] = React.useState([]);
+
 
   return (
     <>
