@@ -21,8 +21,8 @@ function Link({ href, children, ...props }) {
 }
 
 const MaterialUISwitch = styledMUI(Switch)(({ theme }) => ({
-  width: 62,
-  height: 34,
+  width: 60,
+  height: 24,
   padding: 7,
   '& .MuiSwitch-switchBase': {
     margin: 1,
@@ -30,7 +30,7 @@ const MaterialUISwitch = styledMUI(Switch)(({ theme }) => ({
     transform: 'translateX(6px)',
     '&.Mui-checked': {
       color: '#fff',
-      transform: 'translateX(22px)',
+      transform: 'translateX(36px)',
       '& .MuiSwitch-thumb:before': {
         backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
           '#fff',
@@ -47,8 +47,8 @@ const MaterialUISwitch = styledMUI(Switch)(({ theme }) => ({
   },
   '& .MuiSwitch-thumb': {
     backgroundColor: '#001e3c',
-    width: 32,
-    height: 32,
+    width: 22,
+    height: 22,
     '&::before': {
       content: "''",
       position: 'absolute',
@@ -106,7 +106,6 @@ export function AlurakutMenu({ githubUser }) {
         </nav>
 
         <nav>
-        <MaterialUISwitch onClick={changeTheme}/>
 
         </nav>
         <button onClick={() => setMenuState(!isMenuOpen)}>
@@ -122,7 +121,7 @@ AlurakutMenu.Wrapper = styled.header`
   width: 100%;
   background-color: ${({ theme }) => theme.nav ? theme.nav.bgColor : 'none'};
   .alurakutMenuProfileSidebar {
-    background: #000000aa;
+    background: #ffffff;
     position: absolute;
     height: 1080px;
     z-index: 100;
@@ -133,7 +132,7 @@ AlurakutMenu.Wrapper = styled.header`
     top: 48px;
     transition: .3s;
     pointer-events: ${({ isMenuOpen }) => isMenuOpen ? 'all' : 'none'};
-    opacity: ${({ isMenuOpen }) => isMenuOpen ? '1' : '0'};
+    opacity: ${({ isMenuOpen }) => isMenuOpen ? '10' : '0'};
     transform: ${({ isMenuOpen }) => isMenuOpen ? 'translateY(0)' : 'translateY(calc(-100% - 48px))'};
     @media(min-width: 860px) {
       display: none;
@@ -253,7 +252,7 @@ function AlurakutMenuProfileSidebar({ githubUser }) {
 // AlurakutProfileSidebarMenuDefault
 // ================================================================================================================
 export function AlurakutProfileSidebarMenuDefault() {
-  const { selectedTheme } = useContext(CommonContext)
+  const { selectedTheme, changeTheme } = useContext(CommonContext)
 
   return (
     <AlurakutProfileSidebarMenuDefault.Wrapper theme={selectedTheme}>
@@ -286,6 +285,15 @@ export function AlurakutProfileSidebarMenuDefault() {
             Sair
           </a>
       </nav>
+      <hr />
+      <nav>
+          <a style={{ textWrap: 'nowrap'}}>
+
+          Modo escuro: 
+          <MaterialUISwitch onClick={changeTheme}/>
+          </a>
+
+      </nav>
     </AlurakutProfileSidebarMenuDefault.Wrapper>
   )
 }
@@ -298,6 +306,9 @@ AlurakutProfileSidebarMenuDefault.Wrapper = styled.div`
     align-items: center;
     justify-content: flex-start;
     text-decoration: none;
+    @media(max-width: 860px) {
+          color: #000000;
+    }
     img {
       width: 16px;
       height: 16px;
