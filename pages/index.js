@@ -1,5 +1,4 @@
-import React from 'react';
-import { useEffect, useState} from 'react'
+import { useEffect, useState, useContext} from 'react'
 import MainGrid from '../src/styledComponents/MainGrid'
 import Box from '../src/styledComponents/Box'
 import { AlurakutMenu, OrkutNostalgicIconSet } from '../src/libs/aluraKutCommons'
@@ -7,6 +6,7 @@ import { useConstCallback } from 'powerhooks'
 import FriendsBox  from '../src/components/FriendsBox'
 import ProfileBox  from '../src/components/ProfileBox'
 import ProfileSideBar  from '../src/components/ProfileSideBar'
+import { CommonContext }  from '../src/context/CommonContext'
 
 export default function Home() {
   const [seguidores, setSeguidores] = useState([]);
@@ -60,22 +60,23 @@ export default function Home() {
     // })
   }, [fetchFollowers, fetchFavoritePeople])
 
+  const { selectedTheme } = useContext(CommonContext)
 
   return (
     <>
-      <AlurakutMenu githubUser={usuario} />
+      <AlurakutMenu githubUser={usuario} theme={selectedTheme}/>
       <MainGrid>
         <div className="profileArea" style={{ gridArea: 'profileArea' }}>
           <ProfileSideBar githubUser={usuario}/>
         </div>
         <div className="welcomeArea" style={{ gridArea: 'welcomeArea' }}>
-          <Box>
+          <Box theme={selectedTheme}>
             <h1 className="title">
               Bem Vindo(a)
             </h1>
             <OrkutNostalgicIconSet />
           </Box>
-          <Box>
+          <Box theme={selectedTheme}>
             <h2 className="subTitle">O Que você deseja Fazer ?</h2>
             <form onSubmit={function handleCriarComuniade(event){
               event.preventDefault();

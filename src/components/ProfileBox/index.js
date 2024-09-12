@@ -1,8 +1,12 @@
 import ProfileRelationsBoxWrapper from '../../styledComponents/ProfileRelations';
+import { useContext } from 'react';
+import { CommonContext } from '../../context/CommonContext';
 
 const ProfileBox = ({ title, items }) =>{
+    const { selectedTheme } = useContext(CommonContext)
+
     return (
-        <ProfileRelationsBoxWrapper>
+        <ProfileRelationsBoxWrapper theme={selectedTheme}>
             <h2 className="smallTitle">
                 {title} ({items.length})
             </h2>

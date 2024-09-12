@@ -1,4 +1,5 @@
 import { createGlobalStyle, ThemeProvider } from 'styled-components'
+import { CommonPovider } from '../src/context/CommonContext'
 
 const GlobalStyle = createGlobalStyle`
 /* Reset Básico de CSS */
@@ -37,9 +38,11 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       <GlobalStyle />
-      <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
-      </ThemeProvider>
+      <CommonPovider>
+        <ThemeProvider theme={theme}>
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </CommonPovider>
     </>
   )
 }

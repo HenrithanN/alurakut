@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled, { css } from 'styled-components';
 import NextLink from 'next/link';
+import { CommonContext } from '../context/CommonContext'
+import { Switch } from '@mui/material'
+import { styled as styledMUI } from '@mui/material/styles';
+
 
 const BASE_URL = 'http://alurakut.vercel.app/';
 const v = '1';
@@ -16,16 +20,73 @@ function Link({ href, children, ...props }) {
   )
 }
 
+const MaterialUISwitch = styledMUI(Switch)(({ theme }) => ({
+  width: 62,
+  height: 34,
+  padding: 7,
+  '& .MuiSwitch-switchBase': {
+    margin: 1,
+    padding: 0,
+    transform: 'translateX(6px)',
+    '&.Mui-checked': {
+      color: '#fff',
+      transform: 'translateX(22px)',
+      '& .MuiSwitch-thumb:before': {
+        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
+          '#fff',
+        )}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`,
+      },
+      '& + .MuiSwitch-track': {
+        opacity: 1,
+        backgroundColor: '#aab4be',
+        ...theme.applyStyles('dark', {
+          backgroundColor: '#8796A5',
+        }),
+      },
+    },
+  },
+  '& .MuiSwitch-thumb': {
+    backgroundColor: '#001e3c',
+    width: 32,
+    height: 32,
+    '&::before': {
+      content: "''",
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      left: 0,
+      top: 0,
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center',
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
+        '#fff',
+      )}" d="M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z"/></svg>')`,
+    },
+    ...theme.applyStyles('dark', {
+      backgroundColor: '#003892',
+    }),
+  },
+  '& .MuiSwitch-track': {
+    opacity: 1,
+    backgroundColor: '#aab4be',
+    borderRadius: 20 / 2,
+    ...theme.applyStyles('dark', {
+      backgroundColor: '#8796A5',
+    }),
+  },
+}));
 // ================================================================================================================
 // Menu
 // ================================================================================================================
 export function AlurakutMenu({ githubUser }) {
+  const { selectedTheme, changeTheme } = useContext(CommonContext)
+  
+
   const [isMenuOpen, setMenuState] = React.useState(false);
   return (
-    <AlurakutMenu.Wrapper isMenuOpen={isMenuOpen}>
+    <AlurakutMenu.Wrapper isMenuOpen={isMenuOpen} theme={selectedTheme}>
       <div className="container">
         <AlurakutMenu.Logo src={`${BASE_URL}/logo.svg`} />
-
         <nav style={{ flex: 1 }}>
           {[{ name: 'Inicio', slug: '/'}, {name: 'Amigos', slug: '/amigos'}, {name: 'Comunidades', slug: '/comunidades'}].map((menuItem) => (
             <Link key={`key__${menuItem.name.toLocaleLowerCase()}`} href={`${menuItem.slug.toLocaleLowerCase()}`}>
@@ -39,10 +100,15 @@ export function AlurakutMenu({ githubUser }) {
             Sair
           </a>
           <div>
-            <input placeholder="Pesquisar no Orkut" />
+            <input style={{ backgroundColor: 'inherit', border: '1px solid white' }} placeholder="Pesquisar no Orkut" />
           </div>
+
         </nav>
 
+        <nav>
+        <MaterialUISwitch onClick={changeTheme}/>
+
+        </nav>
         <button onClick={() => setMenuState(!isMenuOpen)}>
           {isMenuOpen && <img src={`${BASE_URL}/icons/menu-open.svg?v=${v}`} />}
           {!isMenuOpen && <img src={`${BASE_URL}/icons/menu-closed.svg?v=${v}`} />}
@@ -54,7 +120,7 @@ export function AlurakutMenu({ githubUser }) {
 }
 AlurakutMenu.Wrapper = styled.header`
   width: 100%;
-  background-color: #424242;
+  background-color: ${({ theme }) => theme.nav ? theme.nav.bgColor : 'none'};
   .alurakutMenuProfileSidebar {
     background: #000000aa;
     position: absolute;
@@ -91,11 +157,11 @@ AlurakutMenu.Wrapper = styled.header`
       margin-top: 12px;
       margin-bottom: 8px;
       border-color: transparent;
-      border-bottom-color: #424242;
+      border-bottom-color: ${({ theme }) => theme.nav ? theme.nav.bgColor : 'none'};
     }
   }
   .container {
-    background-color: #424242;
+    background-color: ${({ theme }) => theme.nav ? theme.nav.bgColor : 'none'};
     padding: 7px 16px;
     max-width: 1110px;
     margin: auto;
@@ -122,13 +188,13 @@ AlurakutMenu.Wrapper = styled.header`
       }
       a {
         font-size: 12px;
-        color: #ffffffaa;
+        color: ${({ theme }) => theme.nav ? theme.nav.primary : 'none'};
         padding: 10px 16px;
         position: relative;
         text-decoration: none;
         &:after {
           content: " ";
-          background-color: #FFFFFFaa;
+          background-color: ${({ theme }) => theme.nav ? theme.nav.primary : 'none'};
           display: block;
           position: absolute;
           width: 1px;
@@ -187,8 +253,10 @@ function AlurakutMenuProfileSidebar({ githubUser }) {
 // AlurakutProfileSidebarMenuDefault
 // ================================================================================================================
 export function AlurakutProfileSidebarMenuDefault() {
+  const { selectedTheme } = useContext(CommonContext)
+
   return (
-    <AlurakutProfileSidebarMenuDefault.Wrapper>
+    <AlurakutProfileSidebarMenuDefault.Wrapper theme={selectedTheme}>
       <nav>
         <a href="/">
           <img src={`${BASE_URL}/icons/user.svg`} />
@@ -224,7 +292,7 @@ export function AlurakutProfileSidebarMenuDefault() {
 AlurakutProfileSidebarMenuDefault.Wrapper = styled.div`
   a {
     font-size: 12px;
-    color: #ffffffaa;
+    color: ${({ theme }) => theme.body ? theme.body.primary : 'none'};
     margin-bottom: 16px;
     display: flex;
     align-items: center;
@@ -242,8 +310,10 @@ AlurakutProfileSidebarMenuDefault.Wrapper = styled.div`
 // OrkutNostalgicIconSet
 // ================================================================================================================
 export function OrkutNostalgicIconSet(props) {
+  const { selectedTheme } = useContext(CommonContext)
+
   return (
-    <OrkutNostalgicIconSet.List>
+    <OrkutNostalgicIconSet.List theme={selectedTheme}>
       {[
         { name: 'Recados', slug: 'recados', icon: 'book' },
         { name: 'Fotos', slug: 'fotos', icon: 'camera' },
@@ -292,7 +362,7 @@ OrkutNostalgicIconSet.List = styled.ul`
   flex-wrap: wrap;
   li {
     font-size: 12px;
-    color: #ffffffaa;
+    color: ${({ theme }) => theme.body ? theme.body.primary : 'none'};
     display: grid;
     grid-template-areas:
       "title title"
